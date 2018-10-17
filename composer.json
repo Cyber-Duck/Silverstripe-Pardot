@@ -1,7 +1,7 @@
 {
-    "name": "Cyber-Duck/Silverstripe-Pardot",
+    "name": "cyber-duck/silverstripe-pardot",
     "description": "Pardot integration for SilverStripe",
-    "homepage": "https://github.com/Cyber-Duck/Silverstripe-Pardot",
+    "homepage": "https://github.com/cyber-duck/silverstripe-pardot",
     "keywords": [
         "silverstripe",
         "pardot"
@@ -15,13 +15,13 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/Cyber-Duck/Silverstripe-Pardot"
+        "issues": "https://github.com/cyber-duck/silverstripe-pardot"
     },
     "extra": {
         "expose": [
             "client/css",
             "client/img",
-            "js"
+            "client/js"
         ]
     },
     "require": {
