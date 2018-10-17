@@ -4,7 +4,7 @@
             editor.addButton('pardot', {
                 text: 'Pardot',
                 tooltip: 'Pardot Forms',
-                image: '/resources/vendor/cyber-duck/silverstripe-pardot/img/pardot.svg',
+                image: '/resources/vendor/cyber-duck/silverstripe-pardot/client/img/pardot.svg',
                 classes: 'pardot-trigger',
                 onclick: function () { }
             });
