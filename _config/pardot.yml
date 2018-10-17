@@ -4,6 +4,9 @@ Name: pardot
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
     - resources/vendor/cyber-duck/silverstripe-pardot/client/css/pardot.css
+SilverStripe\Control\Director:
+  rules:
+    'pardot': 'CyberDuck\Pardot\Controller\PardotController'
 SilverStripe\SiteConfig\SiteConfig:
   extensions:
     - CyberDuck\Pardot\Extension\PardotSiteConfigExtension
