@@ -6,7 +6,18 @@
                 tooltip: 'Pardot Forms',
                 image: '/resources/vendor/cyber-duck/silverstripe-pardot/client/img/pardot.svg',
                 classes: 'pardot-trigger',
-                onclick: function () { }
+                onclick: function () {
+                    jQuery('body').append('<div class="ss-ui-pardot panel panel--padded panel--scrollable cms-content-fields cms-content-loading-spinner"></div>');
+                    jQuery.ajax({
+                        url: '/pardot/PardotContentFormHTML',
+                        complete: function () {
+                            jQuery('.ss-ui-pardot').removeClass('cms-content-loading-spinner');
+                        },
+                        success: function (html) {
+                            jQuery('.ss-ui-pardot').html(html);
+                        }
+                    });
+                }
             });
         },
         getInfo: function () {
