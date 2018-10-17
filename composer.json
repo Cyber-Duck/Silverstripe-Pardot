@@ -1,0 +1,36 @@
+{
+    "name": "Cyber-Duck/Silverstripe-Pardot",
+    "description": "Pardot integration for SilverStripe",
+    "homepage": "https://github.com/Cyber-Duck/Silverstripe-Pardot",
+    "keywords": [
+        "silverstripe",
+        "pardot"
+    ],
+    "type": "silverstripe-vendormodule",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Mc Cormack",
+            "email": "andy@cyber-duck.co.uk"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Cyber-Duck/Silverstripe-Pardot"
+    },
+    "extra": {
+        "expose": [
+            "client/css",
+            "client/img",
+            "js"
+        ]
+    },
+    "require": {
+        "Cyber-Duck/Pardot-API": "*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "prefer-stable": true
+}
