@@ -14,7 +14,7 @@
                 longname: 'SilverStripe Pardot',
                 author: 'Andrew Mc Cormack',
                 authorurl: 'https://ddmseo.com',
-                infourl: 'https://github.com/Cyber-Duck/Pardot-API',
+                infourl: 'https://github.com/cyber-duck/silverstripe-pardot',
                 version: '1.0.0'
             };
         }
