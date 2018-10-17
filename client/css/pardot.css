@@ -3,3 +3,10 @@
     background-repeat: no-repeat;
     background-size: contain;
 }
+
+.ss-ui-pardot {
+    border-left: 1px solid #ced5e1;
+    position: relative;
+    width: 600px;
+    z-index: 0;
+}
