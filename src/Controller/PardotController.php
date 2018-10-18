@@ -12,6 +12,7 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
+use SilverStripe\ORM\FieldType\DBField;
 
 class PardotController extends Controller
 {
@@ -19,38 +20,92 @@ class PardotController extends Controller
 
     private static $allowed_actions = [
         'PardotContentForm',
+        'PardotDynamicContentForm',
         'PardotContentFormHTML'
     ];
 
     public function PardotContentForm()
     {
         $fields = FieldList::create(
-            HeaderField::create('PardotForms', 'Form Content', 3),
-            DropdownField::create('Form', 'Select')->addExtraClass('form-group'),
-            NumericField::create('FormHeight','Height')->addExtraClass('form-group'),
-            NumericField::create('FormWidth','Width')->addExtraClass('form-group'),
-            TextField::create('FormCssClass','CSS Class')->addExtraClass('form-group'),
-            HeaderField::create('PardotDynamicContent', 'Dynamic Content', 3),
-            DropdownField::create('DynamicContent', 'Select')->addExtraClass('form-group'),
-            NumericField::create('DynamicContentHeight','Height')->addExtraClass('form-group'),
-            NumericField::create('DynamicContentWidth','Width')->addExtraClass('form-group'),
-            TextField::create('DynamicContentCssClass','CSS Class')->addExtraClass('form-group')
+            HeaderField::create('PardotFormHeading', 'Form Content', 3),
+            DropdownField::create('PardotForm', 'Select')
+                ->addExtraClass('form-group')
+                ->setCustomValidationMessage('Please select a form'),
+            NumericField::create('FormHeight','Height')
+                ->addExtraClass('form-group'),
+            NumericField::create('FormWidth','Width')
+                ->addExtraClass('form-group'),
+            TextField::create('FormCssClass','CSS Class')
+                ->addExtraClass('form-group')
         );
         $actions = FieldList::create( 
-            FormAction::create('doFormSubmit', 'Submit')->addExtraClass('btn btn-primary')
+            FormAction::create('doFormContentSubmit', 'Insert')
+                ->addExtraClass('btn btn-primary')
         );
 
-        $required = [];
-        $validator = new RequiredFields($required);
+        $required = [
+            'PardotForm'
+        ];
+        $validator = RequiredFields::create($required);
 
         $form = Form::create($this, 'PardotContentForm', $fields, $actions, $validator);
         $form->setTemplate('cms-edit-form cms-panel-padded center');
+        $form->setFormAction('/pardot/PardotContentForm');
+        $form->setFormMethod('POST', true);
+        $form->addExtraClass('ss-ui-pardot-form');
+
+        return $form;
+    }
+
+    public function PardotDynamicContentForm()
+    {
+        $fields = FieldList::create(
+            HeaderField::create('PardotDynamicContentHeading', 'Dynamic Content', 3),
+            DropdownField::create('DynamicContent', 'Select')
+                ->addExtraClass('form-group')
+                ->setCustomValidationMessage('Please select a content type'),
+            NumericField::create('DynamicContentHeight','Height')
+                ->addExtraClass('form-group'),
+            NumericField::create('DynamicContentWidth','Width')
+                ->addExtraClass('form-group'),
+            TextField::create('DynamicContentCssClass','CSS Class')
+                ->addExtraClass('form-group')
+        );
+        $actions = FieldList::create(
+            FormAction::create('doDynamicContentSubmit', 'Insert')
+                ->addExtraClass('btn btn-primary')
+        );
+
+        $required = [
+            'PardotDynamicContent'
+        ];
+        $validator = RequiredFields::create($required);
+
+        $form = Form::create($this, 'PardotContentForm', $fields, $actions, $validator);
+        $form->setTemplate('cms-edit-form cms-panel-padded center');
+        $form->setFormAction('/pardot/PardotDynamicContentForm');
+        $form->setFormMethod('POST', true);
+        $form->addExtraClass('ss-ui-pardot-form');
 
         return $form;
     }
 
     public function PardotContentFormHTML(): string
     {
-        return $this->PardotContentForm()->forAjaxTemplate();
+        return DBField::create_field(
+            'HTMLText',
+            $this->PardotContentForm()->forAjaxTemplate().
+            $this->PardotDynamicContentForm()->forAjaxTemplate()
+        );
+    }
+
+    public function doFormContentSubmit()
+    {
+        
+    }
+
+    public function doDynamicContentSubmit()
+    {
+        
     }
 }
