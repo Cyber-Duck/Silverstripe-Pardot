@@ -7,17 +7,20 @@
                 image: '/resources/vendor/cyber-duck/silverstripe-pardot/client/img/pardot.svg',
                 classes: 'pardot-trigger',
                 onclick: function () {
-                    jQuery('.ss-ui-pardot').remove();
-                    jQuery('body').append('<div class="ss-ui-pardot panel panel--padded panel--scrollable cms-content-fields cms-content-loading-spinner"></div>');
-                    jQuery.ajax({
-                        url: '/pardot/PardotContentFormHTML',
-                        complete: function () {
-                            jQuery('.ss-ui-pardot').removeClass('cms-content-loading-spinner');
-                        },
-                        success: function (html) {
-                            jQuery('.ss-ui-pardot').html(html);
-                        }
-                    });
+                    if(jQuery('.ss-ui-pardot').length) {
+                        jQuery('.ss-ui-pardot').remove()
+                    } else {
+                        jQuery('body').append('<div class="ss-ui-pardot panel panel--padded panel--scrollable cms-content-fields cms-content-loading-spinner"></div>');
+                        jQuery.ajax({
+                            url: '/pardot/PardotContentFormHTML',
+                            complete: function () {
+                                jQuery('.ss-ui-pardot').removeClass('cms-content-loading-spinner');
+                            },
+                            success: function (html) {
+                                jQuery('.ss-ui-pardot').html(html);
+                            }
+                        });
+                    }
                 }
             });
         },
@@ -32,4 +35,20 @@
         }
     });
     tinymce.PluginManager.add('pardot', tinymce.plugins.pardot);
+
+    jQuery('body').on('submit', 'form.ss-ui-pardot-form', function (e) {
+        e.preventDefault();
+        var form = jQuery(this);
+        jQuery.ajax({
+            url: form.attr('action'),
+            data: form.serialize(),
+            type: form.attr('method'),
+            complete: function () {
+
+            },
+            success: function (response) {
+                form.replaceWith(response);
+            }
+        });
+    });
 })();
