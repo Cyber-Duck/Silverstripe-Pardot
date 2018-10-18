@@ -19,10 +19,19 @@ class PardotController extends Controller
     private static $url_segment = 'pardot';
 
     private static $allowed_actions = [
+        'PardotContentFormHTML',
         'PardotContentForm',
-        'PardotDynamicContentForm',
-        'PardotContentFormHTML'
+        'PardotDynamicContentForm'
     ];
+
+    public function PardotContentFormHTML(): string
+    {
+        return DBField::create_field(
+            'HTMLText',
+            $this->PardotContentForm()->forAjaxTemplate().
+            $this->PardotDynamicContentForm()->forAjaxTemplate()
+        );
+    }
 
     public function PardotContentForm()
     {
@@ -88,15 +97,6 @@ class PardotController extends Controller
         $form->addExtraClass('ss-ui-pardot-form');
 
         return $form;
-    }
-
-    public function PardotContentFormHTML(): string
-    {
-        return DBField::create_field(
-            'HTMLText',
-            $this->PardotContentForm()->forAjaxTemplate().
-            $this->PardotDynamicContentForm()->forAjaxTemplate()
-        );
     }
 
     public function doFormContentSubmit()
