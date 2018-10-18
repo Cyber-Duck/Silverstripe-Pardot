@@ -7,6 +7,7 @@
                 image: '/resources/vendor/cyber-duck/silverstripe-pardot/client/img/pardot.svg',
                 classes: 'pardot-trigger',
                 onclick: function () {
+                    jQuery('.ss-ui-pardot').remove();
                     jQuery('body').append('<div class="ss-ui-pardot panel panel--padded panel--scrollable cms-content-fields cms-content-loading-spinner"></div>');
                     jQuery.ajax({
                         url: '/pardot/PardotContentFormHTML',
