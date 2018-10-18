@@ -1,4 +1,5 @@
 <?php
+if(!defined('SILVERSTRIPE_PARDOT_PATH')) define('SILVERSTRIPE_PARDOT_PATH', rtrim(basename(dirname(__FILE__))));
 
 use SilverStripe\Forms\HtmlEditor\HtmlEditorConfig;
 
