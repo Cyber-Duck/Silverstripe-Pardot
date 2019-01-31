@@ -1,5 +1,5 @@
 ---
-Name: pardot
+Name: pardot api config
 ---
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
@@ -7,6 +7,3 @@ SilverStripe\Admin\LeftAndMain:
 SilverStripe\Control\Director:
   rules:
     'pardot': 'CyberDuck\Pardot\Controller\PardotController'
-SilverStripe\SiteConfig\SiteConfig:
-  extensions:
-    - CyberDuck\Pardot\Extension\PardotSiteConfigExtension
