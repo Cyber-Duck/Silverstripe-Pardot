@@ -1,8 +1,19 @@
 <?php
+
 if(!defined('SILVERSTRIPE_PARDOT_PATH')) define('SILVERSTRIPE_PARDOT_PATH', rtrim(basename(dirname(__FILE__))));
 
+use CyberDuck\Pardot\Provider\PardotShortCodeProvider;
 use SilverStripe\Forms\HtmlEditor\HtmlEditorConfig;
+use SilverStripe\View\Parsers\ShortcodeParser;
 
-$config = HtmlEditorConfig::get('cms');
-$config->enablePlugins(array('pardot' => '/resources/vendor/cyber-duck/silverstripe-pardot/client/js/pardot.js'));
-$config->addButtonsToLine(2, 'pardot');
+ShortcodeParser::get('default')->register(
+    'pardot_form', [PardotShortCodeProvider::class, 'PardotForm']
+);
+ShortcodeParser::get('default')->register(
+    'pardot_dynamic_content', [PardotShortCodeProvider::class, 'PardotDynamicContent']
+);
+
+HtmlEditorConfig::get('cms')->enablePlugins([
+    'pardot' => '/resources/vendor/cyber-duck/silverstripe-pardot/client/js/pardot.js'
+]);
+HtmlEditorConfig::get('cms')->addButtonsToLine(2, 'pardot');
