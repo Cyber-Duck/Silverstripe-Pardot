@@ -26,9 +26,11 @@ Add the following to your composer.json file and run /dev/build?flush=all
 
 Add the required pardot authentication details to your .env file
 
+```
 PARDOT_EMAIL="youremail@..."
 PARDOT_PASSWORD="1234567890$"
 PARDOT_USER_KEY="12345678901234567890"
 PARDOT_API_VERSION="3"
+```
 
 You can use version 2 or 3 of the Pardot API. This will depend on your Pardot account.
