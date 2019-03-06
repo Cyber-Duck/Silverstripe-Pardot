@@ -22,6 +22,7 @@ Add the following to your composer.json file and run /dev/build?flush=all
         "cyber-duck/silverstripe-pardot": "4.0.*"
     }
 }
+```
 
 Add the required pardot authentication details to your .env file
 
