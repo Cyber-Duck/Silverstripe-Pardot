@@ -15,6 +15,8 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\View\ArrayData;
+use Psr\SimpleCache\CacheInterface;
+use SilverStripe\Core\Injector\Injector;
 
 /**
  * Pardot Controller
@@ -25,6 +27,10 @@ use SilverStripe\View\ArrayData;
  **/
 class PardotController extends Controller
 {
+    protected static $FORMS_CACHE_KEY = 'pardot_cache_forms';
+    protected static $DYNAMIC_CONTENTS_CACHE_KEY = 'pardot_dynamic_contents';
+    protected static $CACHE_DURATION = ( 60 * 60 ) * 6; //6 hours
+
     private static $url_segment = 'pardot';
 
     private static $allowed_actions = [
@@ -115,6 +121,12 @@ class PardotController extends Controller
     private function getForms()
     {
         $forms = ArrayList::create();
+        $cache = Injector::inst()->get(CacheInterface::class . '.cyberduckPardotCache');
+
+        if ($cache->has(self::$FORMS_CACHE_KEY)) {
+            return unserialize($cache->get(self::$FORMS_CACHE_KEY));
+        }
+
         foreach (PardotApiService::getApi()->form()->query()->form as $form) {
             $forms->push(ArrayData::create([
                 'ID' => $form->id,
@@ -122,11 +134,19 @@ class PardotController extends Controller
                 'EmbedCode' => $form->embedCode,
             ]));
         }
-        return $forms->Sort('Title')->map();
+        $formList = $forms->Sort('Title')->map();
+        $cache->set(self::$FORMS_CACHE_KEY, serialize($formList), self::$CACHE_DURATION);
+
+        return $formList;
     }
 
     private function getDynamicContent()
     {
+        $cache = Injector::inst()->get(CacheInterface::class . '.cyberduckPardotCache');
+        if ($cache->has(self::$DYNAMIC_CONTENTS_CACHE_KEY)) {
+            return unserialize($cache->get(self::$DYNAMIC_CONTENTS_CACHE_KEY));
+        }
+
         $data = PardotApiService::getApi()->dynamicContent()->query()->dynamicContent;
         $data = is_array($data) ? $data : [$data];
 
@@ -138,6 +158,9 @@ class PardotController extends Controller
                 'EmbedCode' => $content->embedCode,
             ]));
         }
-        return $contents->Sort('Title')->map();
+        $contentList = $contents->Sort('Title')->map();
+        $cache->set(self::$DYNAMIC_CONTENTS_CACHE_KEY, serialize($formList), self::$CACHE_DURATION);
+
+        return $contentList;
     }
 }
