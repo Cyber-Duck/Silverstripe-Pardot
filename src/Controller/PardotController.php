@@ -17,6 +17,7 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\View\ArrayData;
 use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Environment;
 
 /**
  * Pardot Controller
@@ -29,7 +30,7 @@ class PardotController extends Controller
 {
     protected static $FORMS_CACHE_KEY = 'pardot_cache_forms';
     protected static $DYNAMIC_CONTENTS_CACHE_KEY = 'pardot_dynamic_contents';
-    protected static $CACHE_DURATION = ( 60 * 60 ) * 6; //6 hours
+    protected static $CACHE_DURATION = ( 60 * 60 ) * 2; //2 hours
 
     private static $url_segment = 'pardot';
 
@@ -127,7 +128,8 @@ class PardotController extends Controller
             return unserialize($cache->get(self::$FORMS_CACHE_KEY));
         }
 
-        foreach (PardotApiService::getApi()->form()->query()->form as $form) {
+        $queryForm = PardotApiService::getApi()->form()->query()->form;
+        foreach ($queryForm as $form) {
             $forms->push(ArrayData::create([
                 'ID' => $form->id,
                 'Title' => sprintf('%s - %s', $form->campaign->name, $form->name),
@@ -135,7 +137,7 @@ class PardotController extends Controller
             ]));
         }
         $formList = $forms->Sort('Title')->map();
-        $cache->set(self::$FORMS_CACHE_KEY, serialize($formList), self::$CACHE_DURATION);
+        $cache->set(self::$FORMS_CACHE_KEY, serialize($formList), static::getCacheDuration());
 
         return $formList;
     }
@@ -159,8 +161,15 @@ class PardotController extends Controller
             ]));
         }
         $contentList = $contents->Sort('Title')->map();
-        $cache->set(self::$DYNAMIC_CONTENTS_CACHE_KEY, serialize($formList), self::$CACHE_DURATION);
+        $cache->set(self::$DYNAMIC_CONTENTS_CACHE_KEY, serialize($formList), static::getCacheDuration());
 
         return $contentList;
+    }
+
+    protected static function getCacheDuration()
+    {
+        $duration = Environment::getEnv('PARDOT_CACHE_DURATION');
+
+        return ((int)$duration > 0) ? (int)$duration: static::$CACHE_DURATION;
     }
 }
