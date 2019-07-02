@@ -39,9 +39,10 @@ class PardotShortCodeProvider
             $form = unserialize($cache->get(self::formCacheKey($arguments['id'])));
         }
 
+
         if (! $form) {
             $form = PardotApiService::getApi()->form()->read($arguments['id']);
-            $cache->set(self::formCacheKey($arguments['id']), serialize($content), static::getCacheDuration());
+            $cache->set(self::formCacheKey($arguments['id']), serialize($form), static::getCacheDuration());
         }
 
         $code = $form->embedCode;
