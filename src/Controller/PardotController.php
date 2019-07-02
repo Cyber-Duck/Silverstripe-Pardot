@@ -161,7 +161,7 @@ class PardotController extends Controller
             ]));
         }
         $contentList = $contents->Sort('Title')->map();
-        $cache->set(self::$DYNAMIC_CONTENTS_CACHE_KEY, serialize($formList), static::getCacheDuration());
+        $cache->set(self::$DYNAMIC_CONTENTS_CACHE_KEY, serialize($contentList), static::getCacheDuration());
 
         return $contentList;
     }
