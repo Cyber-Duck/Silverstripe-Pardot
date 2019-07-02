@@ -15,6 +15,9 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\View\ArrayData;
+use Psr\SimpleCache\CacheInterface;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Environment;
 
 /**
  * Pardot Controller
@@ -25,6 +28,10 @@ use SilverStripe\View\ArrayData;
  **/
 class PardotController extends Controller
 {
+    protected static $FORMS_CACHE_KEY = 'pardot_cache_forms';
+    protected static $DYNAMIC_CONTENTS_CACHE_KEY = 'pardot_dynamic_contents';
+    protected static $CACHE_DURATION = ( 60 * 60 ) * 2; //2 hours
+
     private static $url_segment = 'pardot';
 
     private static $allowed_actions = [
@@ -115,18 +122,33 @@ class PardotController extends Controller
     private function getForms()
     {
         $forms = ArrayList::create();
-        foreach (PardotApiService::getApi()->form()->query()->form as $form) {
+        $cache = Injector::inst()->get(CacheInterface::class . '.cyberduckPardotCache');
+
+        if ($cache->has(self::$FORMS_CACHE_KEY)) {
+            return unserialize($cache->get(self::$FORMS_CACHE_KEY));
+        }
+
+        $queryForm = PardotApiService::getApi()->form()->query()->form;
+        foreach ($queryForm as $form) {
             $forms->push(ArrayData::create([
                 'ID' => $form->id,
                 'Title' => sprintf('%s - %s', $form->campaign->name, $form->name),
                 'EmbedCode' => $form->embedCode,
             ]));
         }
-        return $forms->Sort('Title')->map();
+        $formList = $forms->Sort('Title')->map();
+        $cache->set(self::$FORMS_CACHE_KEY, serialize($formList), static::getCacheDuration());
+
+        return $formList;
     }
 
     private function getDynamicContent()
     {
+        $cache = Injector::inst()->get(CacheInterface::class . '.cyberduckPardotCache');
+        if ($cache->has(self::$DYNAMIC_CONTENTS_CACHE_KEY)) {
+            return unserialize($cache->get(self::$DYNAMIC_CONTENTS_CACHE_KEY));
+        }
+
         $data = PardotApiService::getApi()->dynamicContent()->query()->dynamicContent;
         $data = is_array($data) ? $data : [$data];
 
@@ -138,6 +160,16 @@ class PardotController extends Controller
                 'EmbedCode' => $content->embedCode,
             ]));
         }
-        return $contents->Sort('Title')->map();
+        $contentList = $contents->Sort('Title')->map();
+        $cache->set(self::$DYNAMIC_CONTENTS_CACHE_KEY, serialize($contentList), static::getCacheDuration());
+
+        return $contentList;
+    }
+
+    protected static function getCacheDuration()
+    {
+        $duration = Environment::getEnv('PARDOT_CACHE_DURATION');
+
+        return ((int)$duration > 0) ? (int)$duration: static::$CACHE_DURATION;
     }
 }
