@@ -56,12 +56,14 @@ final class PardotApiService
         self::$api = new PardotApi(
             Environment::getEnv('PARDOT_EMAIL'),
             Environment::getEnv('PARDOT_PASSWORD'),
-            Environment::getEnv('PARDOT_USER_KEY'),
+            Environment::getEnv('PARDOT_CONSUMER_KEY'),
+            Environment::getEnv('PARDOT_CONSUMER_SECRET'),
+            Environment::getEnv('PARDOT_BUSINESS_UNIT_ID'),
             Environment::getEnv('PARDOT_API_VERSION')
         );
         self::$api->getAuthenticator()->doAuthentication();
     }
-    
+
     private function __construct() {}
 
     private function __clone() {}

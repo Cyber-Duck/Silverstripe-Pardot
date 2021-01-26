@@ -19,7 +19,7 @@ Add the following to your composer.json file and run /dev/build?flush=all
 ```json
 {  
     "require": {  
-        "cyber-duck/silverstripe-pardot": "4.0.*"
+        "cyber-duck/silverstripe-pardot": "5.0.*"
     }
 }
 ```
@@ -29,8 +29,10 @@ Add the required pardot authentication details to your .env file
 ```
 PARDOT_EMAIL="youremail@..."
 PARDOT_PASSWORD="1234567890$"
-PARDOT_USER_KEY="12345678901234567890"
 PARDOT_API_VERSION="3"
+PARDOT_BUSINESS_UNIT_ID = "1234567890$"
+PARDOT_CONSUMER_KEY = "1234567890$"
+PARDOT_CONSUMER_SECRET = "1234567890$"
 ```
 
 You can use version 2 or 3 of the Pardot API. This will depend on your Pardot account.
