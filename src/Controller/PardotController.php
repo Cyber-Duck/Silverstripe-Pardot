@@ -26,7 +26,7 @@ use SilverStripe\Core\Environment;
  * @license MIT License https://github.com/cyber-duck/silverstripe-pardot/blob/master/LICENSE
  * @author  <andrewm@cyber-duck.co.uk>
  **/
-class PardotController extends Controller
+class PardotController extends Controller implements Flushable
 {
     protected static $FORMS_CACHE_KEY = 'pardot_cache_forms';
     protected static $DYNAMIC_CONTENTS_CACHE_KEY = 'pardot_dynamic_contents';
@@ -171,5 +171,13 @@ class PardotController extends Controller
         $duration = Environment::getEnv('PARDOT_CACHE_DURATION');
 
         return ((int)$duration > 0) ? (int)$duration: static::$CACHE_DURATION;
+    }
+
+    /**
+     * Flush the cache when ?flush=1 is triggered
+     */
+    public static function flush()
+    {
+        Injector::inst()->get(CacheInterface::class . '.cyberduckPardotCache')->clear();
     }
 }
