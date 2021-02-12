@@ -6,6 +6,8 @@ use CyberDuck\Pardot\Service\PardotApiService;
 use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Core\Environment;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\View\ArrayData;
 
 /**
  * Pardot Controller
@@ -32,6 +34,7 @@ class PardotShortCodeProvider
      */
     public static function PardotForm($arguments, $content, $parser, $shortcode, $extra = [])
     {
+
         $form = null;
         $cache = Injector::inst()->get(CacheInterface::class . '.cyberduckPardotCache');
 
@@ -46,15 +49,23 @@ class PardotShortCodeProvider
         }
 
         $code = $form->embedCode;
+
+        // Extract url from iframe
+        preg_match('/(?<=src=").*?(?=[\"])/', $code, $matches);
+
+        $codeHTML = DBHTMLText::create();
+        $codeHTML->setValue($code);
+
+        $data = [
+            'Code' => $codeHTML,
+            'FormURL' => $matches[0]
+        ];
+
         if(array_key_exists('class', $arguments)) {
-            $code = str_replace(
-                '></',
-                sprintf(' class="%s"></', $arguments['class']),
-                $code
-            );
+            $data['CSSClass'] = $arguments['class'];
         }
 
-        return $code;
+        return ArrayData::create($data)->renderWith('PardotForm')->forTemplate();
     }
 
     /**
