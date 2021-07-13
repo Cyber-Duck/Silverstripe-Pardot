@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## Version 5.1.1
+
+13th July 2021
+
+### Changed
+
+- Updated ``composer.json`` with lowercase `cyber-duck/pardot-api` module
+  
 ## Version 5.1.0
 
 12th February 2021
